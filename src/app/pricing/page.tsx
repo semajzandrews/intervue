@@ -96,7 +96,7 @@ const plans = [
       { name: "Real-time feedback", included: true },
       { name: "Priority support", included: true },
     ],
-    cta: "Start 7-Day Trial",
+    cta: "Get Elite Access",
     popular: false,
     gradient: "from-purple-50 to-pink-50",
     borderColor: "border-purple-200",
@@ -214,6 +214,16 @@ export default function PricingPage() {
                     {plan.cta}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
+                  {(plan.name === 'Starter' || plan.name === 'Pro') && (
+                    <p className="text-xs text-gray-500 text-center mt-3">
+                      Credit card required • Cancel anytime
+                    </p>
+                  )}
+                  {plan.name === 'Elite' && (
+                    <p className="text-xs text-gray-500 text-center mt-3">
+                      Immediate billing • Premium access
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             ))}
