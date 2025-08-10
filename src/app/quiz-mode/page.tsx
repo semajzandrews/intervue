@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
+import { ProtectedRoute } from "@/components/auth/protected-route"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -219,8 +220,9 @@ export default function QuizModePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <Navigation />
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        <Navigation />
       
       {/* Header */}
       <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-16 z-40">
@@ -362,6 +364,7 @@ export default function QuizModePage() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   )
 }

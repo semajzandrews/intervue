@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Navigation } from "@/components/navigation"
+import { ProtectedRoute } from "@/components/auth/protected-route"
+import { useAuth } from "@/contexts/auth-context"
 import { UsageBanner } from "@/components/usage-banner"
-import { UpgradeModal } from "@/components/upgrade-modal"
 import { QuestionCard } from "@/components/question-card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -59,6 +61,8 @@ Nice to have:
 - Understanding of design systems and component libraries`
 
 export default function GeneratePage() {
+  const router = useRouter()
+  const { user } = useAuth()
   const [jobDescription, setJobDescription] = useState("")
   const [questionType, setQuestionType] = useState("mixed")
   const [questionCount, setQuestionCount] = useState("10")
@@ -67,7 +71,6 @@ export default function GeneratePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [questions, setQuestions] = useState<typeof mockQuestions>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   const handleInsertDemo = () => {
     setJobDescription(demoJobDescription)
@@ -99,8 +102,9 @@ export default function GeneratePage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Navigation />
+    <ProtectedRoute>
+      <div className="min-h-screen">
+        <Navigation />
       
       <div className="main-content">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -121,9 +125,9 @@ export default function GeneratePage() {
           {/* Usage Banner */}
           <div className="mb-12">
             <UsageBanner 
-              used={3} 
-              limit={5} 
-              onUpgradeClick={() => setShowUpgradeModal(true)} 
+              used={user?.usage.questionsUsed || 0} 
+              limit={user?.usage.questionsLimit || 5} 
+              onUpgradeClick={() => router.push('/pricing')} 
             />
           </div>
 
@@ -340,11 +344,7 @@ export default function GeneratePage() {
           </main>
         </div>
 
-        {/* Upgrade Modal */}
-        <UpgradeModal 
-          isOpen={showUpgradeModal} 
-          onClose={() => setShowUpgradeModal(false)} 
-        />
       </div>
-    )
+    </ProtectedRoute>
+  )
 } 

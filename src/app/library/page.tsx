@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
+import { ProtectedRoute } from "@/components/auth/protected-route"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -115,8 +116,9 @@ export default function LibraryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <Navigation />
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        <Navigation />
       
       {/* Header Section */}
       <section className="py-12 lg:py-16">
@@ -324,6 +326,7 @@ export default function LibraryPage() {
           </div>
         </section>
       )}
-    </div>
+      </div>
+    </ProtectedRoute>
   )
 }

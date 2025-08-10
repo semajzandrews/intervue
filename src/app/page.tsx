@@ -5,6 +5,7 @@ import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/contexts/auth-context"
 import { 
   ArrowRight, 
   Sparkles, 
@@ -17,6 +18,7 @@ import {
 } from "lucide-react"
 
 export default function HomePage() {
+  const { isSignedIn } = useAuth()
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navigation />
@@ -47,12 +49,12 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link href="/generate">
+              <Link href={isSignedIn ? "/generate" : "/sign-up"}>
                 <Button 
                   size="lg" 
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg font-semibold group"
                 >
-                  Start Practicing Free
+                  {isSignedIn ? "Continue Practicing" : "Start Practicing Free"}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -354,12 +356,12 @@ export default function HomePage() {
           <p className="text-xl text-gray-300 mb-10">
             Join thousands of successful candidates who used Intervue to land their dream jobs
           </p>
-          <Link href="/generate">
+          <Link href={isSignedIn ? "/generate" : "/sign-up"}>
             <Button 
               size="lg" 
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-12 py-6 text-lg font-semibold group"
             >
-              Start Your Free Practice
+              {isSignedIn ? "Continue Your Practice" : "Start Your Free Practice"}
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
