@@ -1,12 +1,17 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
 import { Navigation } from "@/components/navigation"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { 
   User,
   Crown,
@@ -23,7 +28,10 @@ import {
   ArrowUpRight,
   AlertTriangle,
   Eye,
-  EyeOff
+  EyeOff,
+  Save,
+  X,
+  Edit3
 } from "lucide-react"
 
 // Mock user data
@@ -77,8 +85,22 @@ const planFeatures = {
 }
 
 export default function AccountPage() {
+  const router = useRouter()
+  const { user } = useAuth()
+  
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showCardDetails, setShowCardDetails] = useState(false)
+  const [isEditingProfile, setIsEditingProfile] = useState(false)
+  const [profileData, setProfileData] = useState({
+    name: mockUser.name,
+    email: mockUser.email
+  })
+  const [notifications, setNotifications] = useState({
+    emailUpdates: true,
+    usageAlerts: true,
+    billingReminders: false
+  })
+  const [isLoading, setIsLoading] = useState(false)
   
   const usagePercentage = (mockUser.usage.questionsUsed / mockUser.usage.questionsLimit) * 100
   
@@ -98,6 +120,61 @@ export default function AccountPage() {
       day: 'numeric',
       year: 'numeric'
     })
+  }
+
+  const handleSaveProfile = async () => {
+    setIsLoading(true)
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    setIsEditingProfile(false)
+    setIsLoading(false)
+    alert('Profile updated successfully!')
+  }
+
+  const handleCancelEdit = () => {
+    setProfileData({
+      name: mockUser.name,
+      email: mockUser.email
+    })
+    setIsEditingProfile(false)
+  }
+
+  const handleUpgradePlan = () => {
+    router.push('/pricing')
+  }
+
+  const handleUpdatePayment = () => {
+    alert('Payment method update functionality would be implemented here')
+  }
+
+  const handleExportData = () => {
+    // Generate and download user data
+    const userData = {
+      profile: profileData,
+      usage: mockUser.usage,
+      billingHistory: mockBillingHistory,
+      exportDate: new Date().toISOString()
+    }
+    
+    const dataStr = JSON.stringify(userData, null, 2)
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'intervue-data-export.json'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleDeleteAccount = () => {
+    alert('Account deletion would be implemented here with proper backend integration')
+    setShowDeleteConfirm(false)
+  }
+
+  const handleDownloadInvoice = (invoice: typeof mockBillingHistory[0]) => {
+    alert(`Downloading invoice ${invoice.invoice}`)
   }
 
   return (
@@ -134,20 +211,69 @@ export default function AccountPage() {
                 </h2>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xl">
-                    {mockUser.name.split(' ').map(n => n[0]).join('')}
+                {isEditingProfile ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Full Name</Label>
+                        <Input
+                          id="name"
+                          value={profileData.name}
+                          onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={profileData.email}
+                          onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
+                          placeholder="Enter your email"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-3 pt-4">
+                      <Button 
+                        onClick={handleSaveProfile}
+                        disabled={isLoading}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                      >
+                        {isLoading ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Save Changes
+                          </>
+                        )}
+                      </Button>
+                      <Button variant="outline" onClick={handleCancelEdit}>
+                        <X className="mr-2 h-4 w-4" />
+                        Cancel
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{mockUser.name}</h3>
-                    <p className="text-gray-600 mb-2">{mockUser.email}</p>
-                    <p className="text-sm text-gray-500">Member since {formatDate(mockUser.joinDate)}</p>
+                ) : (
+                  <div className="flex items-start gap-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xl">
+                      {profileData.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{profileData.name}</h3>
+                      <p className="text-gray-600 mb-2">{profileData.email}</p>
+                      <p className="text-sm text-gray-500">Member since {formatDate(mockUser.joinDate)}</p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setIsEditingProfile(true)}>
+                      <Edit3 className="mr-2 h-4 w-4" />
+                      Edit Profile
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Edit Profile
-                  </Button>
-                </div>
+                )}
               </CardContent>
             </Card>
 
@@ -170,7 +296,10 @@ export default function AccountPage() {
                     </div>
                     <p className="text-gray-600">Next billing: {formatDate(mockUser.nextBilling)}</p>
                   </div>
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0">
+                  <Button 
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
+                    onClick={handleUpgradePlan}
+                  >
                     <ArrowUpRight className="mr-2 h-4 w-4" />
                     Upgrade Plan
                   </Button>
@@ -239,7 +368,11 @@ export default function AccountPage() {
                           {invoice.plan} • {formatDate(invoice.date)}
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDownloadInvoice(invoice)}
+                      >
                         <Download className="mr-2 h-4 w-4" />
                         Invoice
                       </Button>
@@ -284,7 +417,11 @@ export default function AccountPage() {
                     {showCardDetails ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={handleUpdatePayment}
+                >
                   Update Payment Method
                 </Button>
               </CardContent>
@@ -305,21 +442,30 @@ export default function AccountPage() {
                       <Mail className="h-4 w-4 text-gray-500" />
                       <span className="text-sm text-gray-900">Email updates</span>
                     </div>
-                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Switch
+                      checked={notifications.emailUpdates}
+                      onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, emailUpdates: checked }))}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Smartphone className="h-4 w-4 text-gray-500" />
                       <span className="text-sm text-gray-900">Usage alerts</span>
                     </div>
-                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Switch
+                      checked={notifications.usageAlerts}
+                      onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, usageAlerts: checked }))}
+                    />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Calendar className="h-4 w-4 text-gray-500" />
                       <span className="text-sm text-gray-900">Billing reminders</span>
                     </div>
-                    <input type="checkbox" className="rounded" />
+                    <Switch
+                      checked={notifications.billingReminders}
+                      onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, billingReminders: checked }))}
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -331,11 +477,19 @@ export default function AccountPage() {
                 <h2 className="text-lg font-semibold text-gray-900">Account Actions</h2>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={handleExportData}
+                >
                   <Download className="mr-2 h-4 w-4" />
                   Export Data
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => alert('Privacy settings panel would be implemented here')}
+                >
                   <Shield className="mr-2 h-4 w-4" />
                   Privacy Settings
                 </Button>
@@ -375,7 +529,10 @@ export default function AccountPage() {
                 >
                   Cancel
                 </Button>
-                <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white">
+                <Button 
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                  onClick={handleDeleteAccount}
+                >
                   Delete Account
                 </Button>
               </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Navigation } from "@/components/navigation"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 import { Button } from "@/components/ui/button"
@@ -24,7 +25,46 @@ import {
   Share2
 } from "lucide-react"
 
-// Mock flashcard data
+// Mock session data that matches library sessions
+const mockSessions = {
+  "1": {
+    id: "1",
+    jobTitle: "Senior Software Engineer",
+    company: "Google",
+    flashcards: [
+      {
+        id: "1",
+        question: "Tell me about a time when you had to work with a difficult team member. How did you handle the situation?",
+        answer: "Use the STAR method:\n\n• Situation: Describe the context and team dynamics\n• Task: Explain your role and responsibilities\n• Action: Detail the specific steps you took to address the issue\n• Result: Share the positive outcome and what you learned\n\nKey points to cover:\n- Active listening and empathy\n- Direct but respectful communication\n- Finding common ground\n- Focus on project goals over personal conflicts",
+        type: "Behavioral",
+        difficulty: "Medium"
+      },
+      {
+        id: "2", 
+        question: "How would you design a URL shortener like bit.ly?",
+        answer: "System Design Approach:\n\n1. **Requirements**\n   - Shorten long URLs\n   - Redirect to original URL\n   - Custom aliases (optional)\n   - Analytics tracking\n\n2. **Database Schema**\n   - URL mapping table\n   - User analytics table\n   - Cache layer (Redis)\n\n3. **Algorithm**\n   - Base62 encoding\n   - Counter-based or hash-based\n\n4. **Scale Considerations**\n   - Load balancing\n   - Database sharding\n   - CDN for global distribution",
+        type: "Technical",
+        difficulty: "Hard"
+      }
+    ]
+  },
+  "2": {
+    id: "2", 
+    jobTitle: "Product Manager",
+    company: "Meta",
+    flashcards: [
+      {
+        id: "3",
+        question: "Why do you want to work at our company specifically?",
+        answer: "Structure your response around:\n\n• **Company Mission**: Connect with their values and purpose\n• **Product/Service**: Show genuine interest in what they build\n• **Culture**: Highlight alignment with their work environment\n• **Growth**: Explain how this role advances your career goals\n• **Impact**: Describe how you can contribute to their success\n\nResearch beforehand:\n- Recent company news\n- Product updates\n- Team structure\n- Company values and culture",
+        type: "General",
+        difficulty: "Easy"
+      }
+    ]
+  }
+}
+
+// Default flashcards if no session is specified
 const mockFlashcards = [
   {
     id: "1",
@@ -64,15 +104,82 @@ const mockFlashcards = [
 ]
 
 export default function QuizModePage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const sessionId = searchParams.get('sessionId')
+  
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFlipped, setIsFlipped] = useState(false)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
   const [showSettings, setShowSettings] = useState(false)
   const [isCompleted, setIsCompleted] = useState(false)
+  const [currentSession, setCurrentSession] = useState<any>(null)
+  const [flashcards, setFlashcards] = useState(mockFlashcards)
 
-  const currentCard = mockFlashcards[currentIndex]
-  const progress = ((currentIndex + 1) / mockFlashcards.length) * 100
+  // Load session and progress on mount
+  useEffect(() => {
+    if (sessionId && mockSessions[sessionId as keyof typeof mockSessions]) {
+      const session = mockSessions[sessionId as keyof typeof mockSessions]
+      setCurrentSession(session)
+      setFlashcards(session.flashcards)
+      
+      // Load saved progress for this session
+      const savedProgress = localStorage.getItem(`quiz-progress-${sessionId}`)
+      if (savedProgress) {
+        const progress = JSON.parse(savedProgress)
+        setCurrentIndex(progress.currentIndex || 0)
+        setTimeElapsed(progress.timeElapsed || 0)
+        setIsCompleted(progress.isCompleted || false)
+      }
+    } else {
+      // Default session
+      setFlashcards(mockFlashcards)
+      const savedProgress = localStorage.getItem('quiz-progress-default')
+      if (savedProgress) {
+        const progress = JSON.parse(savedProgress)
+        setCurrentIndex(progress.currentIndex || 0)
+        setTimeElapsed(progress.timeElapsed || 0)
+        setIsCompleted(progress.isCompleted || false)
+      }
+    }
+  }, [sessionId])
+
+  // Save progress whenever state changes
+  useEffect(() => {
+    const progressKey = sessionId ? `quiz-progress-${sessionId}` : 'quiz-progress-default'
+    const progress = {
+      currentIndex,
+      timeElapsed,
+      isCompleted,
+      lastUpdated: Date.now()
+    }
+    localStorage.setItem(progressKey, JSON.stringify(progress))
+  }, [currentIndex, timeElapsed, isCompleted, sessionId])
+
+  const currentCard = flashcards[currentIndex]
+  const progress = ((currentIndex + 1) / flashcards.length) * 100
+
+  // Show loading or error state if no flashcards
+  if (!flashcards || flashcards.length === 0) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+          <Navigation />
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">No Questions Found</h1>
+            <p className="text-gray-600 mb-8">This session doesn't have any questions yet.</p>
+            <Link href="/library">
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Library
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </ProtectedRoute>
+    )
+  }
 
   // Timer effect
   useEffect(() => {
@@ -120,7 +227,7 @@ export default function QuizModePage() {
   }
 
   const goToNext = () => {
-    if (currentIndex < mockFlashcards.length - 1) {
+    if (currentIndex < flashcards.length - 1) {
       setCurrentIndex(prev => prev + 1)
       setIsFlipped(false)
     } else {
@@ -146,6 +253,10 @@ export default function QuizModePage() {
     setTimeElapsed(0)
     setIsTimerRunning(false)
     setIsCompleted(false)
+    
+    // Clear saved progress
+    const progressKey = sessionId ? `quiz-progress-${sessionId}` : 'quiz-progress-default'
+    localStorage.removeItem(progressKey)
   }
 
   if (isCompleted) {
@@ -163,14 +274,14 @@ export default function QuizModePage() {
               Session Complete! 🎉
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Great job! You've completed all {mockFlashcards.length} flashcards in {formatTime(timeElapsed)}.
+              Great job! You've completed all {flashcards.length} flashcards in {formatTime(timeElapsed)}.
             </p>
             
             <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-2xl mx-auto">
               <Card className="border-0 shadow-lg">
                 <CardContent className="p-6 text-center">
                   <Target className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900 mb-1">{mockFlashcards.length}</div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">{flashcards.length}</div>
                   <p className="text-gray-600 text-sm">Cards Completed</p>
                 </CardContent>
               </Card>
@@ -224,6 +335,18 @@ export default function QuizModePage() {
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         <Navigation />
       
+      {/* Session Header */}
+      {currentSession && (
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div className="text-center">
+              <h2 className="text-lg font-semibold text-gray-900">{currentSession.jobTitle}</h2>
+              <p className="text-sm text-gray-600">{currentSession.company}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -238,7 +361,7 @@ export default function QuizModePage() {
               
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-gray-900">
-                  {currentIndex + 1} of {mockFlashcards.length}
+                  {currentIndex + 1} of {flashcards.length}
                 </span>
                 <Progress value={progress} className="w-32 h-2" />
               </div>
@@ -350,7 +473,7 @@ export default function QuizModePage() {
             onClick={goToNext}
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-6 py-3"
           >
-            {currentIndex === mockFlashcards.length - 1 ? 'Complete' : 'Next'}
+            {currentIndex === flashcards.length - 1 ? 'Complete' : 'Next'}
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
