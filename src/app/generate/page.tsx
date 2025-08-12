@@ -71,22 +71,63 @@ export default function GeneratePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [questions, setQuestions] = useState<typeof mockQuestions>([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [errors, setErrors] = useState<{[key: string]: string}>({})
+  const [isFormValid, setIsFormValid] = useState(false)
 
   const handleInsertDemo = () => {
     setJobDescription(demoJobDescription)
+    validateForm({ jobDescription: demoJobDescription, questionCount, customCount })
+  }
+
+  const validateForm = (formData: { jobDescription: string, questionCount: string, customCount: string }) => {
+    const newErrors: {[key: string]: string} = {}
+    
+    // Job description validation
+    if (!formData.jobDescription.trim()) {
+      newErrors.jobDescription = "Job description is required"
+    } else if (formData.jobDescription.trim().length < 50) {
+      newErrors.jobDescription = "Job description should be at least 50 characters"
+    } else if (formData.jobDescription.trim().length > 5000) {
+      newErrors.jobDescription = "Job description should not exceed 5000 characters"
+    }
+    
+    // Custom count validation
+    if (formData.questionCount === "custom") {
+      if (!formData.customCount.trim()) {
+        newErrors.customCount = "Please enter a number of questions"
+      } else {
+        const count = parseInt(formData.customCount)
+        if (isNaN(count) || count < 1) {
+          newErrors.customCount = "Number must be at least 1"
+        } else if (count > 50) {
+          newErrors.customCount = "Number cannot exceed 50"
+        }
+      }
+    }
+    
+    setErrors(newErrors)
+    const isValid = Object.keys(newErrors).length === 0
+    setIsFormValid(isValid)
+    return isValid
   }
 
   const handleGenerate = async () => {
-    if (!jobDescription.trim()) return
+    const isValid = validateForm({ jobDescription, questionCount, customCount })
+    if (!isValid) return
     
     setIsGenerating(true)
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setQuestions(mockQuestions)
-    setCurrentQuestionIndex(0)
-    setIsGenerating(false)
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      setQuestions(mockQuestions)
+      setCurrentQuestionIndex(0)
+    } catch {
+      setErrors({ general: "Failed to generate questions. Please try again." })
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const handlePreviousQuestion = () => {
@@ -97,9 +138,6 @@ export default function GeneratePage() {
     setCurrentQuestionIndex(Math.min(questions.length - 1, currentQuestionIndex + 1))
   }
 
-  const getQuestionCountValue = () => {
-    return questionCount === "custom" ? parseInt(customCount) || 10 : parseInt(questionCount)
-  }
 
   return (
     <ProtectedRoute>
@@ -158,9 +196,25 @@ export default function GeneratePage() {
                     id="job-description"
                     placeholder="Paste the job description here, or enter a URL to the job posting..."
                     value={jobDescription}
-                    onChange={(e) => setJobDescription(e.target.value)}
-                    className="min-h-[140px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl text-gray-700 placeholder:text-gray-400 shadow-sm"
+                    onChange={(e) => {
+                      setJobDescription(e.target.value)
+                      validateForm({ jobDescription: e.target.value, questionCount, customCount })
+                    }}
+                    className={`min-h-[140px] resize-none focus:ring-blue-500 rounded-xl text-gray-700 placeholder:text-gray-400 shadow-sm transition-colors ${
+                      errors.jobDescription 
+                        ? 'border-red-300 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-blue-500'
+                    }`}
                   />
+                  {errors.jobDescription && (
+                    <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+                      <span className="text-red-500">⚠</span>
+                      {errors.jobDescription}
+                    </p>
+                  )}
+                  <div className="text-xs text-gray-500 mt-2">
+                    {jobDescription.length}/5000 characters
+                  </div>
                 </div>
               </div>
 
@@ -192,7 +246,10 @@ export default function GeneratePage() {
                   {/* Question Count */}
                   <div className="space-y-3">
                     <Label className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Question Count</Label>
-                    <Select value={questionCount} onValueChange={setQuestionCount}>
+                    <Select value={questionCount} onValueChange={(value) => {
+                      setQuestionCount(value)
+                      validateForm({ jobDescription, questionCount: value, customCount })
+                    }}>
                       <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg h-12 shadow-sm">
                         <SelectValue />
                       </SelectTrigger>
@@ -205,15 +262,30 @@ export default function GeneratePage() {
                     </Select>
                     
                     {questionCount === "custom" && (
-                      <Input
-                        type="number"
-                        placeholder="Enter number"
-                        value={customCount}
-                        onChange={(e) => setCustomCount(e.target.value)}
-                        className="mt-2 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg h-12 shadow-sm"
-                        min="1"
-                        max="50"
-                      />
+                      <div className="space-y-2">
+                        <Input
+                          type="number"
+                          placeholder="Enter number (1-50)"
+                          value={customCount}
+                          onChange={(e) => {
+                            setCustomCount(e.target.value)
+                            validateForm({ jobDescription, questionCount, customCount: e.target.value })
+                          }}
+                          className={`mt-2 focus:ring-blue-500 rounded-lg h-12 shadow-sm transition-colors ${
+                            errors.customCount 
+                              ? 'border-red-300 focus:border-red-500' 
+                              : 'border-gray-200 focus:border-blue-500'
+                          }`}
+                          min="1"
+                          max="50"
+                        />
+                        {errors.customCount && (
+                          <p className="text-red-600 text-sm flex items-center gap-1">
+                            <span className="text-red-500">⚠</span>
+                            {errors.customCount}
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
 
@@ -243,11 +315,23 @@ export default function GeneratePage() {
                 </div>
               </div>
 
+              {/* Error Display */}
+              {errors.general && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                  <span className="text-red-500 text-lg">⚠</span>
+                  <p className="text-red-700 font-medium">{errors.general}</p>
+                </div>
+              )}
+
               {/* Generate Button */}
               <Button
                 onClick={handleGenerate}
-                disabled={!jobDescription.trim() || isGenerating}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-6 text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 rounded-2xl flex items-center justify-center gap-3 transform hover:scale-105"
+                disabled={!isFormValid || isGenerating}
+                className={`w-full font-bold py-6 text-lg shadow-2xl transition-all duration-300 rounded-2xl flex items-center justify-center gap-3 ${
+                  !isFormValid || isGenerating
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:shadow-3xl transform hover:scale-105'
+                } text-white`}
               >
                 {isGenerating ? (
                   <>
