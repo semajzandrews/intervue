@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Navigation } from "@/components/navigation"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 import { Button } from "@/components/ui/button"
@@ -9,7 +10,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { 
   Search,
-  Filter,
   Plus,
   Calendar,
   Building2,
@@ -86,10 +86,12 @@ const mockSessions = [
 ]
 
 export default function LibraryPage() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedFilter, setSelectedFilter] = useState("all")
+  const [sessions, setSessions] = useState(mockSessions)
 
-  const filteredSessions = mockSessions.filter(session => {
+  const filteredSessions = sessions.filter(session => {
     const matchesSearch = session.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          session.company.toLowerCase().includes(searchQuery.toLowerCase())
     
@@ -113,6 +115,52 @@ export default function LibraryPage() {
       day: 'numeric',
       year: 'numeric'
     })
+  }
+
+  const handleResume = (sessionId: string) => {
+    // Navigate to quiz mode with session ID
+    router.push(`/quiz-mode?sessionId=${sessionId}`)
+  }
+
+  const handleEdit = (sessionId: string) => {
+    // Navigate to generate page with session data for editing
+    router.push(`/generate?editId=${sessionId}`)
+  }
+
+  const handleDownload = (session: typeof mockSessions[0]) => {
+    // Generate and download session data as JSON
+    const dataStr = JSON.stringify({
+      jobTitle: session.jobTitle,
+      company: session.company,
+      location: session.location,
+      dateCreated: session.dateCreated,
+      questionCount: session.questionCount,
+      questionTypes: session.questionTypes,
+      status: session.status,
+      // In real app, would include actual questions
+      questions: Array.from({ length: session.questionCount }, (_, i) => ({
+        id: i + 1,
+        question: `Sample question ${i + 1} for ${session.jobTitle} at ${session.company}`,
+        type: session.questionTypes[i % session.questionTypes.length]
+      }))
+    }, null, 2)
+    
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${session.company}-${session.jobTitle.replace(/\s+/g, '_')}-questions.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleDelete = (sessionId: string) => {
+    // Show confirmation and delete session
+    if (window.confirm('Are you sure you want to delete this session? This action cannot be undone.')) {
+      setSessions(prev => prev.filter(session => session.id !== sessionId))
+    }
   }
 
   return (
@@ -161,21 +209,21 @@ export default function LibraryPage() {
                 onClick={() => setSelectedFilter("all")}
                 className="px-4 py-3"
               >
-                All ({mockSessions.length})
+                All ({sessions.length})
               </Button>
               <Button
                 variant={selectedFilter === "completed" ? "default" : "outline"}
                 onClick={() => setSelectedFilter("completed")}
                 className="px-4 py-3"
               >
-                Completed ({mockSessions.filter(s => s.status === "completed").length})
+                Completed ({sessions.filter(s => s.status === "completed").length})
               </Button>
               <Button
                 variant={selectedFilter === "in-progress" ? "default" : "outline"}
                 onClick={() => setSelectedFilter("in-progress")}
                 className="px-4 py-3"
               >
-                In Progress ({mockSessions.filter(s => s.status === "in-progress").length})
+                In Progress ({sessions.filter(s => s.status === "in-progress").length})
               </Button>
             </div>
           </div>
@@ -257,20 +305,39 @@ export default function LibraryPage() {
                       <Button 
                         size="sm" 
                         className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-sm hover:shadow-lg transition-all group"
+                        onClick={() => handleResume(session.id)}
                       >
                         <Play className="mr-2 h-3 w-3" />
                         Resume
                       </Button>
                       
-                      <Button size="sm" variant="outline" className="p-2 hover:bg-gray-50">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="p-2 hover:bg-gray-50"
+                        onClick={() => handleEdit(session.id)}
+                        title="Edit session"
+                      >
                         <Edit3 className="h-3 w-3" />
                       </Button>
                       
-                      <Button size="sm" variant="outline" className="p-2 hover:bg-gray-50">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="p-2 hover:bg-gray-50"
+                        onClick={() => handleDownload(session)}
+                        title="Download questions"
+                      >
                         <Download className="h-3 w-3" />
                       </Button>
                       
-                      <Button size="sm" variant="outline" className="p-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="p-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                        onClick={() => handleDelete(session.id)}
+                        title="Delete session"
+                      >
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
@@ -293,7 +360,7 @@ export default function LibraryPage() {
                     <Target className="h-6 w-6 text-white" />
                   </div>
                   <div className="text-3xl font-bold text-gray-900 mb-2">
-                    {mockSessions.reduce((sum, session) => sum + session.questionCount, 0)}
+                    {sessions.reduce((sum, session) => sum + session.questionCount, 0)}
                   </div>
                   <p className="text-gray-600">Total Questions Generated</p>
                 </CardContent>
@@ -305,7 +372,7 @@ export default function LibraryPage() {
                     <Briefcase className="h-6 w-6 text-white" />
                   </div>
                   <div className="text-3xl font-bold text-gray-900 mb-2">
-                    {mockSessions.filter(s => s.status === "completed").length}
+                    {sessions.filter(s => s.status === "completed").length}
                   </div>
                   <p className="text-gray-600">Completed Sessions</p>
                 </CardContent>
@@ -317,7 +384,7 @@ export default function LibraryPage() {
                     <Clock className="h-6 w-6 text-white" />
                   </div>
                   <div className="text-3xl font-bold text-gray-900 mb-2">
-                    {Math.round(mockSessions.reduce((sum, session) => sum + session.questionCount, 0) * 2.5)}
+                    {Math.round(sessions.reduce((sum, session) => sum + session.questionCount, 0) * 2.5)}
                   </div>
                   <p className="text-gray-600">Hours of Practice</p>
                 </CardContent>
