@@ -20,7 +20,26 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Sparkles, Loader2, HelpCircle, FileText } from "lucide-react"
+import { 
+  Sparkles, 
+  Loader2, 
+  HelpCircle, 
+  FileText, 
+  Zap,
+  Target,
+  Brain,
+  Wand2,
+  Settings2,
+  Copy,
+  Check,
+  Download,
+  BookOpen,
+  ArrowRight,
+  RefreshCw,
+  AlertCircle,
+  Globe,
+  Clock
+} from "lucide-react"
 
 // Mock data for demonstration
 const mockQuestions = [
@@ -141,54 +160,81 @@ export default function GeneratePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-slate-50">
         <Navigation />
       
-      <div className="main-content">
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Page Header */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100 mb-6">
-              <Sparkles className="h-4 w-4 text-blue-600 mr-2" />
-              <span className="text-sm font-medium text-blue-900">AI-Powered Interview Preparation</span>
+        {/* Hero Section */}
+        <section className="relative overflow-hidden bg-white border-b border-slate-200/50">
+          <div className="absolute inset-0">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-400/10 to-purple-400/10 rounded-full blur-3xl transform translate-x-48 -translate-y-48" />
+          </div>
+          
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center space-y-6">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50/50 border border-purple-200/50 shadow-sm">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <Brain className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-sm font-medium text-purple-700">AI Question Generator</span>
+              </div>
+              
+              <div className="space-y-4">
+                <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
+                  <span className="text-slate-900">Generate</span>{" "}
+                  <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                    personalized
+                  </span>
+                  <br />
+                  <span className="text-slate-900">interview questions</span>
+                </h1>
+                
+                <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                  Transform any job description into tailored interview questions with our advanced AI. 
+                  Practice with confidence and land your dream role.
+                </p>
+              </div>
+              
+              {/* Usage Banner */}
+              <div className="max-w-2xl mx-auto">
+                <UsageBanner 
+                  used={user?.usage.questionsUsed || 0} 
+                  limit={user?.usage.questionsLimit || 5} 
+                  onUpgradeClick={() => router.push('/pricing')} 
+                />
+              </div>
             </div>
-            <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent mb-6 leading-tight">
-              Generate Interview Questions
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Paste your job description or URL to instantly prep with tailored interview questions and expert answers.
-            </p>
           </div>
+        </section>
+      
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-          {/* Usage Banner */}
-          <div className="mb-12">
-            <UsageBanner 
-              used={user?.usage.questionsUsed || 0} 
-              limit={user?.usage.questionsLimit || 5} 
-              onUpgradeClick={() => router.push('/pricing')} 
-            />
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-12">
             {/* Input Panel */}
             <div className="lg:col-span-2 space-y-8">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl shadow-lg shadow-slate-900/5 border border-slate-200/50 p-8">
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="job-description" className="text-xl font-bold text-gray-900 block mb-2">
-                        Job Description
-                      </Label>
-                      <p className="text-sm text-gray-500">Paste your job description or job post URL below</p>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center">
+                          <FileText className="h-5 w-5 text-slate-600" />
+                        </div>
+                        <div>
+                          <Label htmlFor="job-description" className="text-xl font-bold text-slate-900 block">
+                            Job Description
+                          </Label>
+                          <p className="text-sm text-slate-500">Paste your job description or job post URL below</p>
+                        </div>
+                      </div>
                     </div>
                     <Button
                       onClick={handleInsertDemo}
                       variant="outline"
                       size="sm"
-                      className="flex items-center gap-2 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 rounded-lg shadow-sm"
+                      className="flex items-center gap-2 text-purple-700 border-purple-200 hover:bg-purple-50 hover:border-purple-300 transition-all duration-200 rounded-xl shadow-sm font-medium"
                     >
-                      <FileText className="h-4 w-4" />
-                      Insert Demo
+                      <Sparkles className="h-4 w-4" />
+                      Try Demo
                     </Button>
                   </div>
                   
@@ -200,69 +246,88 @@ export default function GeneratePage() {
                       setJobDescription(e.target.value)
                       validateForm({ jobDescription: e.target.value, questionCount, customCount })
                     }}
-                    className={`min-h-[140px] resize-none focus:ring-blue-500 rounded-xl text-gray-700 placeholder:text-gray-400 shadow-sm transition-colors ${
+                    className={`min-h-[160px] resize-none focus:ring-purple-500 rounded-xl text-slate-700 placeholder:text-slate-400 shadow-sm transition-colors font-medium ${
                       errors.jobDescription 
                         ? 'border-red-300 focus:border-red-500' 
-                        : 'border-gray-200 focus:border-blue-500'
+                        : 'border-slate-200 focus:border-purple-400'
                     }`}
                   />
                   {errors.jobDescription && (
-                    <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
-                      <span className="text-red-500">⚠</span>
+                    <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4" />
                       {errors.jobDescription}
                     </p>
                   )}
-                  <div className="text-xs text-gray-500 mt-2">
-                    {jobDescription.length}/5000 characters
+                  <div className="flex items-center justify-between text-xs text-slate-500 mt-2">
+                    <span className="flex items-center gap-1">
+                      <Globe className="h-3 w-3" />
+                      Supports job URLs from major platforms
+                    </span>
+                    <span>{jobDescription.length}/5000 characters</span>
                   </div>
                 </div>
               </div>
 
               {/* Options Panel */}
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">⚙</span>
+              <div className="bg-white rounded-2xl shadow-lg shadow-slate-900/5 border border-slate-200/50 p-8">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center">
+                    <Settings2 className="h-6 w-6 text-slate-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Generation Options</h3>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900">Generation Options</h3>
+                    <p className="text-sm text-slate-500">Customize your interview questions</p>
+                  </div>
                 </div>
                 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-3 gap-8">
                   {/* Question Type */}
-                  <div className="space-y-3">
-                    <Label className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Question Type</Label>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                        <Target className="h-4 w-4" />
+                        Question Type
+                      </Label>
+                      <p className="text-xs text-slate-500">Choose the focus of your questions</p>
+                    </div>
                     <Select value={questionType} onValueChange={setQuestionType}>
-                      <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg h-12 shadow-sm">
+                      <SelectTrigger className="border-slate-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl h-12 shadow-sm font-medium">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-lg shadow-xl border-gray-100">
-                        <SelectItem value="behavioral" className="rounded-md">Behavioral</SelectItem>
-                        <SelectItem value="technical" className="rounded-md">Technical</SelectItem>
-                        <SelectItem value="mixed" className="rounded-md">Mixed</SelectItem>
+                      <SelectContent className="rounded-xl shadow-xl border-slate-200">
+                        <SelectItem value="behavioral" className="rounded-lg">🧠 Behavioral</SelectItem>
+                        <SelectItem value="technical" className="rounded-lg">⚡ Technical</SelectItem>
+                        <SelectItem value="mixed" className="rounded-lg">🎯 Mixed</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Question Count */}
-                  <div className="space-y-3">
-                    <Label className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Question Count</Label>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                        <BookOpen className="h-4 w-4" />
+                        Question Count
+                      </Label>
+                      <p className="text-xs text-slate-500">How many questions to generate</p>
+                    </div>
                     <Select value={questionCount} onValueChange={(value) => {
                       setQuestionCount(value)
                       validateForm({ jobDescription, questionCount: value, customCount })
                     }}>
-                      <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg h-12 shadow-sm">
+                      <SelectTrigger className="border-slate-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl h-12 shadow-sm font-medium">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-lg shadow-xl border-gray-100">
-                        <SelectItem value="5" className="rounded-md">5 Questions</SelectItem>
-                        <SelectItem value="10" className="rounded-md">10 Questions</SelectItem>
-                        <SelectItem value="20" className="rounded-md">20 Questions</SelectItem>
-                        <SelectItem value="custom" className="rounded-md">Custom</SelectItem>
+                      <SelectContent className="rounded-xl shadow-xl border-slate-200">
+                        <SelectItem value="5" className="rounded-lg">5 Questions</SelectItem>
+                        <SelectItem value="10" className="rounded-lg">10 Questions</SelectItem>
+                        <SelectItem value="20" className="rounded-lg">20 Questions</SelectItem>
+                        <SelectItem value="custom" className="rounded-lg">Custom Amount</SelectItem>
                       </SelectContent>
                     </Select>
                     
                     {questionCount === "custom" && (
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <Input
                           type="number"
                           placeholder="Enter number (1-50)"
@@ -271,17 +336,17 @@ export default function GeneratePage() {
                             setCustomCount(e.target.value)
                             validateForm({ jobDescription, questionCount, customCount: e.target.value })
                           }}
-                          className={`mt-2 focus:ring-blue-500 rounded-lg h-12 shadow-sm transition-colors ${
+                          className={`focus:ring-purple-400 rounded-xl h-12 shadow-sm transition-colors font-medium ${
                             errors.customCount 
                               ? 'border-red-300 focus:border-red-500' 
-                              : 'border-gray-200 focus:border-blue-500'
+                              : 'border-slate-200 focus:border-purple-400'
                           }`}
                           min="1"
                           max="50"
                         />
                         {errors.customCount && (
-                          <p className="text-red-600 text-sm flex items-center gap-1">
-                            <span className="text-red-500">⚠</span>
+                          <p className="text-red-600 text-sm flex items-center gap-2">
+                            <AlertCircle className="h-4 w-4" />
                             {errors.customCount}
                           </p>
                         )}
@@ -290,25 +355,31 @@ export default function GeneratePage() {
                   </div>
 
                   {/* YOLO Mode */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Label className="text-sm font-semibold text-gray-700 uppercase tracking-wide">YOLO Mode</Label>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <HelpCircle className="h-4 w-4 text-gray-400 hover:text-gray-600 transition-colors" />
-                          </TooltipTrigger>
-                          <TooltipContent className="rounded-lg shadow-xl">
-                            <p>Unfiltered AI generation with creative questions</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                          <Wand2 className="h-4 w-4" />
+                          YOLO Mode
+                        </Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <HelpCircle className="h-4 w-4 text-slate-400 hover:text-slate-600 transition-colors" />
+                            </TooltipTrigger>
+                            <TooltipContent className="rounded-xl shadow-xl">
+                              <p>Unfiltered AI generation with creative questions</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <p className="text-xs text-slate-500">Enable creative and unexpected questions</p>
                     </div>
                     <div className="flex items-center h-12">
                       <Switch
                         checked={yoloMode}
                         onCheckedChange={setYoloMode}
-                        className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-pink-500"
+                        className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-600 data-[state=checked]:to-violet-600"
                       />
                     </div>
                   </div>
@@ -318,51 +389,59 @@ export default function GeneratePage() {
               {/* Error Display */}
               {errors.general && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
-                  <span className="text-red-500 text-lg">⚠</span>
+                  <AlertCircle className="h-5 w-5 text-red-500" />
                   <p className="text-red-700 font-medium">{errors.general}</p>
                 </div>
               )}
 
               {/* Generate Button */}
-              <Button
-                onClick={handleGenerate}
-                disabled={!isFormValid || isGenerating}
-                className={`w-full font-bold py-6 text-lg shadow-2xl transition-all duration-300 rounded-2xl flex items-center justify-center gap-3 ${
-                  !isFormValid || isGenerating
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:shadow-3xl transform hover:scale-105'
-                } text-white`}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="h-6 w-6 animate-spin" />
-                    Generating Questions...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-6 w-6" />
-                    Generate Questions
-                  </>
-                )}
-              </Button>
+              <div className="relative">
+                <Button
+                  onClick={handleGenerate}
+                  disabled={!isFormValid || isGenerating}
+                  className={`w-full font-bold py-6 text-lg shadow-lg transition-all duration-300 rounded-2xl flex items-center justify-center gap-3 ${
+                    !isFormValid || isGenerating
+                      ? 'bg-slate-300 cursor-not-allowed text-slate-500'
+                      : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 hover:shadow-xl transform hover:scale-[1.02]'
+                  } text-white`}
+                >
+                  {isGenerating ? (
+                    <>
+                      <RefreshCw className="h-6 w-6 animate-spin" />
+                      Generating Questions...
+                    </>
+                  ) : (
+                    <>
+                      <Brain className="h-6 w-6" />
+                      Generate Questions
+                      <ArrowRight className="h-5 w-5" />
+                    </>
+                  )}
+                </Button>
+                
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300 -z-10" />
+              </div>
             </div>
 
             {/* Generated Output Area */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 h-fit backdrop-blur-sm sticky top-24">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 bg-gradient-to-tr from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">📝</span>
+              <div className="bg-white rounded-2xl shadow-lg shadow-slate-900/5 border border-slate-200/50 p-6 h-fit sticky top-24">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center">
+                    <BookOpen className="h-6 w-6 text-slate-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Preview</h3>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900">Preview</h3>
+                    <p className="text-sm text-slate-500">Generated questions will appear here</p>
+                  </div>
                 </div>
                 {questions.length > 0 ? (
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                      <div className="text-sm font-semibold text-green-800">
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-slate-50 to-blue-50/50 rounded-xl border border-slate-200/50">
+                      <div className="text-sm font-semibold text-slate-800">
                         {questions.length} questions generated
                       </div>
-                      <div className="text-xs text-green-600 px-2 py-1 bg-green-100 rounded-full">
+                      <div className="text-xs text-slate-600 px-3 py-1.5 bg-slate-100 rounded-full font-medium">
                         {questionType} type
                       </div>
                     </div>
@@ -370,30 +449,30 @@ export default function GeneratePage() {
                       {questions.map((q, index) => (
                         <div 
                           key={q.id}
-                          className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 hover:scale-105 ${
+                          className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
                             index === currentQuestionIndex 
-                              ? 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-300 shadow-lg' 
-                              : 'bg-gray-50 border-gray-200 hover:bg-white hover:shadow-md'
+                              ? 'bg-gradient-to-r from-slate-50 to-blue-50/50 border-slate-300 shadow-lg' 
+                              : 'bg-slate-50/50 border-slate-200 hover:bg-white hover:shadow-md'
                           }`}
                           onClick={() => setCurrentQuestionIndex(index)}
                         >
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center gap-3 mb-2">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                               index === currentQuestionIndex 
-                                ? 'bg-blue-500 text-white' 
-                                : 'bg-gray-300 text-gray-600'
+                                ? 'bg-slate-700 text-white' 
+                                : 'bg-slate-300 text-slate-600'
                             }`}>
                               {index + 1}
                             </div>
                             <div className={`text-xs font-semibold uppercase tracking-wide ${
                               index === currentQuestionIndex 
-                                ? 'text-blue-600' 
-                                : 'text-gray-500'
+                                ? 'text-slate-700' 
+                                : 'text-slate-500'
                             }`}>
                               Question {index + 1}
                             </div>
                           </div>
-                          <div className="text-sm text-gray-700 line-clamp-2 leading-relaxed">
+                          <div className="text-sm text-slate-700 line-clamp-2 leading-relaxed font-medium">
                             {q.question}
                           </div>
                         </div>
@@ -401,12 +480,23 @@ export default function GeneratePage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center text-gray-500 py-12">
-                    <div className="w-16 h-16 bg-gradient-to-tr from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <Sparkles className="h-8 w-8 text-gray-400" />
+                  <div className="text-center text-slate-500 py-16">
+                    <div className="w-20 h-20 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                      <Brain className="h-10 w-10 text-slate-400" />
                     </div>
-                    <p className="text-gray-600 font-medium">Ready to generate</p>
-                    <p className="text-sm text-gray-500 mt-1">Your questions will appear here</p>
+                    <p className="text-slate-600 font-semibold text-lg">Ready to generate</p>
+                    <p className="text-sm text-slate-500 mt-2">Your personalized questions will appear here</p>
+                    <div className="mt-6 flex items-center justify-center gap-4 text-xs text-slate-400">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        <span>~3 seconds</span>
+                      </div>
+                      <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                      <div className="flex items-center gap-1">
+                        <Target className="h-3 w-3" />
+                        <span>AI-powered</span>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -425,9 +515,7 @@ export default function GeneratePage() {
             />
           </div>
         )}
-          </main>
-        </div>
-
+        </main>
       </div>
     </ProtectedRoute>
   )

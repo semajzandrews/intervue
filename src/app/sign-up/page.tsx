@@ -9,7 +9,6 @@ import { Separator } from "@/components/ui/separator"
 import { 
   ArrowRight,
   Sparkles,
-  Chrome,
   CheckCircle,
   Loader2,
   Gift,
@@ -76,9 +75,7 @@ export default function SignUpPage() {
                 {isSigningUp && signupMethod === 'google' ? (
                   <Loader2 className="mr-3 h-5 w-5 animate-spin" />
                 ) : (
-                  <div className="mr-3 w-5 h-5 bg-white rounded-sm border border-gray-300 flex items-center justify-center">
-                    <Chrome className="h-4 w-4 text-blue-500" />
-                  </div>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png" alt="Google logo" className="mr-3 h-5 w-5" />
                 )}
                 Sign up with Google
               </Button>
@@ -92,9 +89,7 @@ export default function SignUpPage() {
                 {isSigningUp && signupMethod === 'linkedin' ? (
                   <Loader2 className="mr-3 h-5 w-5 animate-spin" />
                 ) : (
-                  <div className="mr-3 w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                    <span className="text-[#0077B5] font-bold text-xs">in</span>
-                  </div>
+                  <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/linkedin-app-white-icon.png" alt="LinkedIn logo" className="mr-3 h-5 w-5" />
                 )}
                 Sign up with LinkedIn
               </Button>

@@ -102,10 +102,10 @@ export default function LibraryPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "completed": return "bg-green-100 text-green-800"
-      case "in-progress": return "bg-blue-100 text-blue-800"
-      case "archived": return "bg-gray-100 text-gray-800"
-      default: return "bg-gray-100 text-gray-800"
+      case "completed": return "bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 border border-emerald-200"
+      case "in-progress": return "bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-800 border border-purple-200"
+      case "archived": return "bg-gradient-to-r from-slate-100 to-gray-100 text-slate-700 border border-slate-200"
+      default: return "bg-gradient-to-r from-slate-100 to-gray-100 text-slate-700 border border-slate-200"
     }
   }
 
@@ -165,181 +165,238 @@ export default function LibraryPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="min-h-screen bg-slate-50">
         <Navigation />
       
-      {/* Header Section */}
-      <section className="py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
-                Your Interview Library
-              </h1>
-              <p className="text-lg text-gray-600">
-                Access your saved sessions, resume practice, and track your progress
-              </p>
-            </div>
-            
-            <Link href="/generate">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all group">
-                <Plus className="mr-2 h-4 w-4" />
-                New Session
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
+        {/* Hero Section */}
+        <section className="relative overflow-hidden bg-white border-b border-slate-200/50">
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-400/10 to-indigo-400/10 rounded-full blur-3xl transform -translate-x-48 -translate-y-48" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-violet-400/10 to-purple-400/10 rounded-full blur-3xl transform translate-x-48 translate-y-48" />
           </div>
           
-          {/* Search and Filter Bar */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by job title or company..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            
-            <div className="flex gap-2">
-              <Button
-                variant={selectedFilter === "all" ? "default" : "outline"}
-                onClick={() => setSelectedFilter("all")}
-                className="px-4 py-3"
-              >
-                All ({sessions.length})
-              </Button>
-              <Button
-                variant={selectedFilter === "completed" ? "default" : "outline"}
-                onClick={() => setSelectedFilter("completed")}
-                className="px-4 py-3"
-              >
-                Completed ({sessions.filter(s => s.status === "completed").length})
-              </Button>
-              <Button
-                variant={selectedFilter === "in-progress" ? "default" : "outline"}
-                onClick={() => setSelectedFilter("in-progress")}
-                className="px-4 py-3"
-              >
-                In Progress ({sessions.filter(s => s.status === "in-progress").length})
-              </Button>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center space-y-6">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50/50 border border-purple-200/50 shadow-sm">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <BookOpen className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-sm font-medium text-purple-700">Interview Library</span>
+              </div>
+              
+              <div className="space-y-4">
+                <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
+                  <span className="text-slate-900">Your</span>{" "}
+                  <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                    practice
+                  </span>
+                  <br />
+                  <span className="text-slate-900">sessions</span>
+                </h1>
+                
+                <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                  Access your saved sessions, resume practice, and track your interview preparation progress. 
+                  All your hard work in one place.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/generate">
+                  <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl transition-all group px-8 py-4 text-base font-semibold rounded-xl">
+                    <Plus className="mr-2 h-5 w-5" />
+                    New Session
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Sessions Grid */}
-      <section className="pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Search and Filter Section */}
+        <section className="py-8 bg-slate-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white rounded-2xl shadow-lg shadow-slate-900/5 border border-slate-200/50 p-6">
+              <div className="flex flex-col lg:flex-row gap-6">
+                {/* Search Bar */}
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search by job title or company..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-400 transition-colors text-slate-700 placeholder:text-slate-400 font-medium"
+                    />
+                  </div>
+                </div>
+                
+                {/* Filter Buttons */}
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    variant={selectedFilter === "all" ? "default" : "outline"}
+                    onClick={() => setSelectedFilter("all")}
+                    className={`px-6 py-4 rounded-xl font-semibold transition-all ${
+                      selectedFilter === "all" 
+                        ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg" 
+                        : "border-slate-200 text-slate-700 hover:bg-purple-50 hover:border-purple-200"
+                    }`}
+                  >
+                    All ({sessions.length})
+                  </Button>
+                  <Button
+                    variant={selectedFilter === "completed" ? "default" : "outline"}
+                    onClick={() => setSelectedFilter("completed")}
+                    className={`px-6 py-4 rounded-xl font-semibold transition-all ${
+                      selectedFilter === "completed" 
+                        ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg" 
+                        : "border-slate-200 text-slate-700 hover:bg-purple-50 hover:border-purple-200"
+                    }`}
+                  >
+                    Completed ({sessions.filter(s => s.status === "completed").length})
+                  </Button>
+                  <Button
+                    variant={selectedFilter === "in-progress" ? "default" : "outline"}
+                    onClick={() => setSelectedFilter("in-progress")}
+                    className={`px-6 py-4 rounded-xl font-semibold transition-all ${
+                      selectedFilter === "in-progress" 
+                        ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg" 
+                        : "border-slate-200 text-slate-700 hover:bg-purple-50 hover:border-purple-200"
+                    }`}
+                  >
+                    In Progress ({sessions.filter(s => s.status === "in-progress").length})
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Sessions Grid */}
+        <section className="pb-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {filteredSessions.length === 0 ? (
             /* Empty State */
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <BookOpen className="h-8 w-8 text-white" />
+            <div className="text-center py-20">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">
+                <BookOpen className="h-10 w-10 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">
                 {searchQuery ? "No sessions found" : "No saved sessions yet"}
               </h3>
-              <p className="text-gray-600 mb-8 max-w-md mx-auto">
+              <p className="text-slate-600 mb-8 max-w-md mx-auto text-lg leading-relaxed">
                 {searchQuery 
-                  ? "Try adjusting your search terms or filters" 
-                  : "Start by generating interview questions for your next job application"
+                  ? "Try adjusting your search terms or filters to find your sessions" 
+                  : "Start by generating interview questions for your next job application and build your practice library"
                 }
               </p>
               <Link href="/generate">
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all">
-                  <Plus className="mr-2 h-4 w-4" />
+                <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-8 py-4 text-base font-semibold rounded-xl">
+                  <Plus className="mr-2 h-5 w-5" />
                   Create Your First Session
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
             </div>
           ) : (
             /* Sessions Grid */
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
               {filteredSessions.map((session) => (
-                <Card key={session.id} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between mb-3">
+                <Card key={session.id} className="border-0 shadow-lg shadow-slate-900/5 hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group bg-white rounded-2xl overflow-hidden border border-slate-200/50">
+                  <CardHeader className="pb-6 p-6">
+                    <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 text-lg mb-1 group-hover:text-blue-600 transition-colors">
+                        <h3 className="font-bold text-slate-900 text-xl mb-3 group-hover:text-purple-600 transition-colors leading-tight">
                           {session.jobTitle}
                         </h3>
-                        <div className="flex items-center gap-2 text-gray-600 mb-2">
-                          <Building2 className="h-4 w-4" />
-                          <span className="font-medium">{session.company}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-500 text-sm">
-                          <MapPin className="h-3 w-3" />
-                          <span>{session.location}</span>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-3 text-slate-700">
+                            <div className="w-5 h-5 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-lg flex items-center justify-center">
+                              <Building2 className="h-3 w-3 text-purple-600" />
+                            </div>
+                            <span className="font-semibold">{session.company}</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-slate-600">
+                            <div className="w-5 h-5 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center">
+                              <MapPin className="h-3 w-3 text-slate-600" />
+                            </div>
+                            <span className="text-sm">{session.location}</span>
+                          </div>
                         </div>
                       </div>
-                      <Badge className={`${getStatusColor(session.status)} border-0 capitalize`}>
+                      <Badge className={`${getStatusColor(session.status)} border-0 capitalize px-3 py-1.5 text-xs font-semibold rounded-full`}>
                         {session.status.replace('-', ' ')}
                       </Badge>
                     </div>
                     
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <FileText className="h-4 w-4" />
-                        <span>{session.questionCount} questions</span>
+                    <div className="flex items-center gap-6 text-sm text-slate-600 bg-slate-50/50 rounded-xl p-4">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-purple-500" />
+                        <span className="font-medium">{session.questionCount} questions</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        <span>{formatDate(session.dateCreated)}</span>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-indigo-500" />
+                        <span className="font-medium">{formatDate(session.dateCreated)}</span>
                       </div>
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="pt-0">
+                  <CardContent className="pt-0 px-6 pb-6">
                     <div className="flex flex-wrap gap-2 mb-6">
                       {session.questionTypes.map((type, index) => (
-                        <Badge key={index} variant="outline" className="text-xs bg-gray-50">
+                        <Badge 
+                          key={index} 
+                          variant="outline" 
+                          className="text-xs bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 text-purple-700 font-medium px-3 py-1 rounded-full"
+                        >
                           {type}
                         </Badge>
                       ))}
                     </div>
                     
-                    <div className="flex items-center gap-2">
+                    <div className="space-y-3">
                       <Button 
                         size="sm" 
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-sm hover:shadow-lg transition-all group"
+                        className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl transition-all group py-3 font-semibold rounded-xl"
                         onClick={() => handleResume(session.id)}
                       >
-                        <Play className="mr-2 h-3 w-3" />
-                        Resume
+                        <Play className="mr-2 h-4 w-4" />
+                        Resume Practice
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                       
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="p-2 hover:bg-gray-50"
-                        onClick={() => handleEdit(session.id)}
-                        title="Edit session"
-                      >
-                        <Edit3 className="h-3 w-3" />
-                      </Button>
-                      
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="p-2 hover:bg-gray-50"
-                        onClick={() => handleDownload(session)}
-                        title="Download questions"
-                      >
-                        <Download className="h-3 w-3" />
-                      </Button>
-                      
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="p-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-                        onClick={() => handleDelete(session.id)}
-                        title="Delete session"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1 p-3 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-700 transition-colors rounded-xl border-slate-200"
+                          onClick={() => handleEdit(session.id)}
+                          title="Edit session"
+                        >
+                          <Edit3 className="h-4 w-4" />
+                        </Button>
+                        
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1 p-3 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 transition-colors rounded-xl border-slate-200"
+                          onClick={() => handleDownload(session)}
+                          title="Download questions"
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1 p-3 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors rounded-xl border-slate-200"
+                          onClick={() => handleDelete(session.id)}
+                          title="Delete session"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -351,42 +408,47 @@ export default function LibraryPage() {
 
       {/* Quick Stats Section */}
       {filteredSessions.length > 0 && (
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-gradient-to-r from-purple-50/50 to-indigo-50/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">Your Progress</h2>
+              <p className="text-xl text-slate-600">Track your interview preparation journey</p>
+            </div>
+            
             <div className="grid md:grid-cols-3 gap-8">
-              <Card className="border-0 shadow-lg text-center">
+              <Card className="border-0 shadow-lg shadow-slate-900/5 text-center bg-white rounded-2xl border border-slate-200/50 hover:shadow-xl transition-all group">
                 <CardContent className="p-8">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Target className="h-6 w-6 text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <Target className="h-8 w-8 text-white" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                  <div className="text-4xl font-bold text-slate-900 mb-3">
                     {sessions.reduce((sum, session) => sum + session.questionCount, 0)}
                   </div>
-                  <p className="text-gray-600">Total Questions Generated</p>
+                  <p className="text-slate-600 font-medium">Total Questions Generated</p>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 shadow-lg text-center">
+              <Card className="border-0 shadow-lg shadow-slate-900/5 text-center bg-white rounded-2xl border border-slate-200/50 hover:shadow-xl transition-all group">
                 <CardContent className="p-8">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Briefcase className="h-6 w-6 text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <Briefcase className="h-8 w-8 text-white" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                  <div className="text-4xl font-bold text-slate-900 mb-3">
                     {sessions.filter(s => s.status === "completed").length}
                   </div>
-                  <p className="text-gray-600">Completed Sessions</p>
+                  <p className="text-slate-600 font-medium">Completed Sessions</p>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 shadow-lg text-center">
+              <Card className="border-0 shadow-lg shadow-slate-900/5 text-center bg-white rounded-2xl border border-slate-200/50 hover:shadow-xl transition-all group">
                 <CardContent className="p-8">
-                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Clock className="h-6 w-6 text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <Clock className="h-8 w-8 text-white" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                  <div className="text-4xl font-bold text-slate-900 mb-3">
                     {Math.round(sessions.reduce((sum, session) => sum + session.questionCount, 0) * 2.5)}
                   </div>
-                  <p className="text-gray-600">Hours of Practice</p>
+                  <p className="text-slate-600 font-medium">Hours of Practice</p>
                 </CardContent>
               </Card>
             </div>

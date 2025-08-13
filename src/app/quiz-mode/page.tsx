@@ -164,14 +164,19 @@ export default function QuizModePage() {
   if (!flashcards || flashcards.length === 0) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        <div className="min-h-screen bg-slate-50">
           <Navigation />
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">No Questions Found</h1>
-            <p className="text-gray-600 mb-8">This session doesn't have any questions yet.</p>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+              <Target className="h-10 w-10 text-white" />
+            </div>
+            <div className="space-y-4">
+              <h1 className="text-3xl font-bold text-slate-900">No Questions Found</h1>
+              <p className="text-xl text-slate-600 max-w-md mx-auto">This session doesn&apos;t have any questions yet. Create a new session to get started.</p>
+            </div>
             <Link href="/library">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                <ArrowLeft className="mr-2 h-4 w-4" />
+              <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all px-8 py-4 rounded-xl font-semibold">
+                <ArrowLeft className="mr-2 h-5 w-5" />
                 Back to Library
               </Button>
             </Link>
@@ -219,10 +224,10 @@ export default function QuizModePage() {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "Easy": return "bg-green-100 text-green-800"
-      case "Medium": return "bg-yellow-100 text-yellow-800" 
-      case "Hard": return "bg-red-100 text-red-800"
-      default: return "bg-gray-100 text-gray-800"
+      case "Easy": return "bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 border border-emerald-200"
+      case "Medium": return "bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 border border-amber-200" 
+      case "Hard": return "bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border border-red-200"
+      default: return "bg-gradient-to-r from-slate-100 to-gray-100 text-slate-700 border border-slate-200"
     }
   }
 
@@ -261,232 +266,297 @@ export default function QuizModePage() {
 
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="min-h-screen bg-slate-50">
         <Navigation />
         
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8">
-              <Trophy className="h-10 w-10 text-white" />
+        {/* Celebration Hero */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-purple-50 via-white to-indigo-50">
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-indigo-400/20 rounded-full blur-3xl transform -translate-x-48 -translate-y-48" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-violet-400/20 to-purple-400/20 rounded-full blur-3xl transform translate-x-48 translate-y-48" />
+          </div>
+          
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="text-center space-y-8">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50/50 border border-purple-200/50 shadow-sm">
+                <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm font-medium text-purple-700">Session Complete</span>
+              </div>
+              
+              <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl">
+                <Trophy className="h-12 w-12 text-white" />
+              </div>
+              
+              <div className="space-y-4">
+                <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
+                  <span className="text-slate-900">Fantastic</span>{" "}
+                  <span className="bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                    work!
+                  </span>
+                </h1>
+                
+                <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                  You've successfully completed all {flashcards.length} flashcards in {formatTime(timeElapsed)}. 
+                  Your dedication to interview preparation is impressive!
+                </p>
+              </div>
             </div>
-            
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Session Complete! 🎉
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Great job! You've completed all {flashcards.length} flashcards in {formatTime(timeElapsed)}.
-            </p>
-            
-            <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-2xl mx-auto">
-              <Card className="border-0 shadow-lg">
-                <CardContent className="p-6 text-center">
-                  <Target className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900 mb-1">{flashcards.length}</div>
-                  <p className="text-gray-600 text-sm">Cards Completed</p>
+          </div>
+        </section>
+        
+        {/* Stats Cards */}
+        <section className="py-16 bg-slate-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-3 gap-8">
+              <Card className="border-0 shadow-lg shadow-slate-900/5 bg-white rounded-2xl border border-slate-200/50 hover:shadow-xl transition-all group">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <Target className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-slate-900 mb-2">{flashcards.length}</div>
+                  <p className="text-slate-600 font-medium">Cards Completed</p>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 shadow-lg">
-                <CardContent className="p-6 text-center">
-                  <Clock className="h-8 w-8 text-green-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900 mb-1">{formatTime(timeElapsed)}</div>
-                  <p className="text-gray-600 text-sm">Time Spent</p>
+              <Card className="border-0 shadow-lg shadow-slate-900/5 bg-white rounded-2xl border border-slate-200/50 hover:shadow-xl transition-all group">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <Clock className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-slate-900 mb-2">{formatTime(timeElapsed)}</div>
+                  <p className="text-slate-600 font-medium">Time Invested</p>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 shadow-lg">
-                <CardContent className="p-6 text-center">
-                  <CheckCircle className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900 mb-1">100%</div>
-                  <p className="text-gray-600 text-sm">Progress</p>
+              <Card className="border-0 shadow-lg shadow-slate-900/5 bg-white rounded-2xl border border-slate-200/50 hover:shadow-xl transition-all group">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <CheckCircle className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-slate-900 mb-2">100%</div>
+                  <p className="text-slate-600 font-medium">Progress</p>
                 </CardContent>
               </Card>
             </div>
-            
+          </div>
+        </section>
+        
+        {/* Action Buttons */}
+        <section className="py-12 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 onClick={resetSession}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-8 py-3"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-8 py-4 text-base font-semibold rounded-xl"
               >
-                <RefreshCw className="mr-2 h-4 w-4" />
+                <RefreshCw className="mr-2 h-5 w-5" />
                 Practice Again
               </Button>
               
               <Link href="/library">
-                <Button variant="outline" className="px-8 py-3">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
+                <Button variant="outline" className="px-8 py-4 text-base font-semibold rounded-xl border-slate-200 text-slate-700 hover:bg-purple-50 hover:border-purple-200">
+                  <ArrowLeft className="mr-2 h-5 w-5" />
                   Back to Library
                 </Button>
               </Link>
               
-              <Button variant="outline" className="px-8 py-3">
-                <Share2 className="mr-2 h-4 w-4" />
+              <Button variant="outline" className="px-8 py-4 text-base font-semibold rounded-xl border-slate-200 text-slate-700 hover:bg-indigo-50 hover:border-indigo-200">
+                <Share2 className="mr-2 h-5 w-5" />
                 Share Progress
               </Button>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     )
   }
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="min-h-screen bg-slate-50">
         <Navigation />
       
-      {/* Session Header */}
-      {currentSession && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div className="text-center">
-              <h2 className="text-lg font-semibold text-gray-900">{currentSession.jobTitle}</h2>
-              <p className="text-sm text-gray-600">{currentSession.company}</p>
+        {/* Session Header */}
+        {currentSession && (
+          <section className="bg-gradient-to-r from-purple-50 via-white to-indigo-50 border-b border-purple-100/50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="text-center space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-100 to-indigo-100 border border-purple-200">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+                  <span className="text-xs font-medium text-purple-700 uppercase tracking-wide">Practice Session</span>
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900">{currentSession.jobTitle}</h2>
+                <p className="text-slate-600 font-medium">{currentSession.company}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Header */}
+        <div className="border-b border-slate-200/50 bg-white/95 backdrop-blur-xl sticky top-16 z-40 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between py-6">
+              <div className="flex items-center gap-6">
+                <Link href="/library">
+                  <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-900 hover:bg-purple-50 rounded-xl font-medium">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Library
+                  </Button>
+                </Link>
+                
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-semibold text-slate-900 bg-slate-100 px-3 py-1.5 rounded-full">
+                    {currentIndex + 1} of {flashcards.length}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Progress value={progress} className="w-40 h-3 bg-slate-200" />
+                    <span className="text-sm font-medium text-purple-600">{Math.round(progress)}%</span>
+                  </div>
+                </div>
+              </div>
+            
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl">
+                  <Clock className="h-4 w-4 text-slate-600" />
+                  <span className="text-sm font-medium text-slate-700">{formatTime(timeElapsed)}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setIsTimerRunning(!isTimerRunning)}
+                    className="p-1.5 hover:bg-purple-100 rounded-lg"
+                  >
+                    {isTimerRunning ? <Pause className="h-3 w-3 text-purple-600" /> : <Play className="h-3 w-3 text-purple-600" />}
+                  </Button>
+                </div>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(!showSettings)}
+                  className="p-2 hover:bg-slate-100 rounded-xl"
+                >
+                  <Settings className="h-4 w-4 text-slate-600" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Header */}
-      <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center gap-4">
-              <Link href="/library">
-                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Library
-                </Button>
-              </Link>
-              
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-gray-900">
-                  {currentIndex + 1} of {flashcards.length}
-                </span>
-                <Progress value={progress} className="w-32 h-2" />
+        {/* Main Content */}
+        <section className="py-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Card Type and Difficulty */}
+            <div className="flex items-center justify-center gap-3 mb-12">
+              <Badge className="bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-800 border border-purple-200 px-4 py-2 rounded-full font-semibold">
+                {currentCard.type}
+              </Badge>
+              <Badge className={`${getDifficultyColor(currentCard.difficulty)} px-4 py-2 rounded-full font-semibold`}>
+                {currentCard.difficulty}
+              </Badge>
+            </div>
+
+            {/* Flashcard */}
+            <div className="perspective-1000 mb-12">
+              <div 
+                className={`relative w-full h-96 sm:h-[500px] transform-style-preserve-3d transition-transform duration-700 cursor-pointer ${
+                  isFlipped ? 'rotate-y-180' : ''
+                }`}
+                onClick={flipCard}
+              >
+                {/* Front of card (Question) */}
+                <Card className="absolute inset-0 backface-hidden border-0 shadow-2xl shadow-slate-900/10 hover:shadow-3xl transition-all bg-white rounded-3xl border border-slate-200/50">
+                  <CardContent className="p-8 sm:p-12 h-full flex flex-col justify-center">
+                    <div className="text-center space-y-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                        <Target className="h-8 w-8 text-white" />
+                      </div>
+                      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-relaxed max-w-3xl mx-auto">
+                        {currentCard.question}
+                      </h2>
+                      <div className="flex items-center justify-center gap-2 text-slate-500">
+                        <div className="w-1 h-1 bg-slate-400 rounded-full" />
+                        <p className="text-sm font-medium">Click to reveal answer</p>
+                        <div className="w-1 h-1 bg-slate-400 rounded-full" />
+                      </div>
+                    </div>
+              </CardContent>
+            </Card>
+
+                {/* Back of card (Answer) */}
+                <Card className="absolute inset-0 backface-hidden rotate-y-180 border-0 shadow-2xl shadow-slate-900/10 bg-gradient-to-br from-emerald-50 via-white to-green-50 rounded-3xl border border-slate-200/50">
+                  <CardContent className="p-8 sm:p-12 h-full overflow-y-auto">
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                          <CheckCircle className="h-8 w-8 text-white" />
+                        </div>
+                      </div>
+                      <div className="prose prose-sm sm:prose max-w-none">
+                        <pre className="whitespace-pre-wrap font-sans text-slate-700 leading-relaxed text-base">
+                          {currentCard.answer}
+                        </pre>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Clock className="h-4 w-4" />
-                <span>{formatTime(timeElapsed)}</span>
+
+            {/* Navigation Controls */}
+            <div className="flex items-center justify-between">
+              <Button
+                variant="outline"
+                onClick={goToPrevious}
+                disabled={currentIndex === 0}
+                className="px-8 py-4 rounded-xl border-slate-200 text-slate-700 hover:bg-purple-50 hover:border-purple-200 font-semibold disabled:opacity-50"
+              >
+                <ChevronLeft className="mr-2 h-5 w-5" />
+                Previous
+              </Button>
+
+              <div className="flex items-center gap-4">
                 <Button
-                  size="sm"
                   variant="ghost"
-                  onClick={() => setIsTimerRunning(!isTimerRunning)}
-                  className="p-1"
+                  onClick={flipCard}
+                  className="px-6 py-4 rounded-xl hover:bg-slate-100 text-slate-700 font-semibold"
                 >
-                  {isTimerRunning ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+                  <RotateCcw className="mr-2 h-5 w-5" />
+                  Flip Card
                 </Button>
               </div>
-              
+
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowSettings(!showSettings)}
+                onClick={goToNext}
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-8 py-4 rounded-xl font-semibold"
               >
-                <Settings className="h-4 w-4" />
+                {currentIndex === flashcards.length - 1 ? 'Complete Session' : 'Next Question'}
+                <ChevronRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Card Type and Difficulty */}
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <Badge className="bg-blue-100 text-blue-800 border-0">
-            {currentCard.type}
-          </Badge>
-          <Badge className={`${getDifficultyColor(currentCard.difficulty)} border-0`}>
-            {currentCard.difficulty}
-          </Badge>
-        </div>
-
-        {/* Flashcard */}
-        <div className="perspective-1000 mb-8">
-          <div 
-            className={`relative w-full h-96 sm:h-[500px] transform-style-preserve-3d transition-transform duration-700 cursor-pointer ${
-              isFlipped ? 'rotate-y-180' : ''
-            }`}
-            onClick={flipCard}
-          >
-            {/* Front of card (Question) */}
-            <Card className="absolute inset-0 backface-hidden border-0 shadow-xl hover:shadow-2xl transition-shadow">
-              <CardContent className="p-8 sm:p-12 h-full flex flex-col justify-center">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-6">
-                    <Target className="h-6 w-6 text-white" />
-                  </div>
-                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-6 leading-relaxed">
-                    {currentCard.question}
-                  </h2>
-                  <p className="text-gray-500 text-sm">
-                    Click to reveal answer
-                  </p>
+            {/* Keyboard Shortcuts Hint */}
+            <div className="text-center mt-12">
+              <div className="inline-flex items-center gap-6 bg-slate-50 px-6 py-4 rounded-2xl border border-slate-200">
+                <div className="flex items-center gap-2 text-slate-600">
+                  <kbd className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs font-semibold">Space</kbd>
+                  <span className="text-sm font-medium">Flip</span>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Back of card (Answer) */}
-            <Card className="absolute inset-0 backface-hidden rotate-y-180 border-0 shadow-xl">
-              <CardContent className="p-8 sm:p-12 h-full overflow-y-auto">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle className="h-6 w-6 text-white" />
+                <div className="w-1 h-4 bg-slate-300 rounded-full" />
+                <div className="flex items-center gap-2 text-slate-600">
+                  <kbd className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs font-semibold">←</kbd>
+                  <span className="text-sm font-medium">Previous</span>
                 </div>
-                <div className="prose prose-sm sm:prose max-w-none">
-                  <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
-                    {currentCard.answer}
-                  </pre>
+                <div className="w-1 h-4 bg-slate-300 rounded-full" />
+                <div className="flex items-center gap-2 text-slate-600">
+                  <kbd className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-mono text-xs font-semibold">→</kbd>
+                  <span className="text-sm font-medium">Next</span>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* Navigation Controls */}
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={goToPrevious}
-            disabled={currentIndex === 0}
-            className="px-6 py-3"
-          >
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            Previous
-          </Button>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              onClick={flipCard}
-              className="px-4 py-3"
-            >
-              <RotateCcw className="mr-2 h-4 w-4" />
-              Flip Card
-            </Button>
-          </div>
-
-          <Button
-            onClick={goToNext}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all px-6 py-3"
-          >
-            {currentIndex === flashcards.length - 1 ? 'Complete' : 'Next'}
-            <ChevronRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Keyboard Shortcuts Hint */}
-        <div className="text-center mt-8 text-sm text-gray-500">
-          <p>
-            Use <kbd className="px-2 py-1 bg-gray-100 rounded">Space</kbd> to flip • 
-            <kbd className="px-2 py-1 bg-gray-100 rounded mx-1">←</kbd> Previous • 
-            <kbd className="px-2 py-1 bg-gray-100 rounded">→</kbd> Next
-          </p>
-        </div>
-      </div>
+        </section>
       </div>
     </ProtectedRoute>
   )

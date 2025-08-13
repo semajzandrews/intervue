@@ -12,8 +12,8 @@ Build a sleek, scalable, and powerful AI-driven web app that helps users prepare
 * **Styling:** Tailwind CSS
 * **UI Components:** ShadCN (Radix-based)
 * **Auth:** Clerk (Google + LinkedIn)
-* **Database:** Supabase
-* **Payments:** Stripe
+* **Database:** ConvexDB
+* **Payments:** Clerk
 * **AI:** OpenAI (for question generation + mock interviewer)
 
 ---
@@ -91,8 +91,8 @@ Build a sleek, scalable, and powerful AI-driven web app that helps users prepare
 
 ### Phase 2: Backend Integration
 
-* Supabase schema
-* Stripe + Clerk integration
+* ConvexDB schema
+* Clerk integration
 * OpenAI endpoints
 * Usage tracking by user + plan
 

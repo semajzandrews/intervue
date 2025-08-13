@@ -384,15 +384,15 @@ export default function SupportPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Live Chat</span>
-                    <span className="text-sm font-medium text-green-600">< 5 minutes</span>
+                    <span className="text-sm font-medium text-green-600">&lt; 5 minutes</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Email Support</span>
-                    <span className="text-sm font-medium text-blue-600">< 24 hours</span>
+                    <span className="text-sm font-medium text-blue-600">&lt; 24 hours</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Technical Issues</span>
-                    <span className="text-sm font-medium text-purple-600">< 48 hours</span>
+                    <span className="text-sm font-medium text-purple-600">&lt; 48 hours</span>
                   </div>
                 </div>
               </CardContent>
